@@ -1,5 +1,6 @@
 # espresso
-Human friendly format that is based on a subset of CoffeeScript Language, an alternative to YAML, JSON, and CSON.
+Human friendly format that is based on a subset of CoffeeScript Language, an alternative to
+[YAML](http://yaml.org), [JSON](http://json.org), and [CSON](https://github.com/bevry/cson).
 Reference Implementation.
 
 ## Version
