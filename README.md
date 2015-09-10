@@ -8,29 +8,31 @@ Reference Implementation.
 
 ## Example
 ```coffee
-# This is a sample comment.
+# Sample espresso file.
+
 distros: [ # A list of ISOs we have.
-  $ name: "Ubuntu", version: "x.x.x"
-  $ name: "Debian"
-  $
-    name: "Mint"
-    motto: """
-      from freedom
-      came elegance
-    """
-    nameTranslations:
-      русский: "Минт"
+	$ name: "Ubuntu", version: "x.x.x"
+	$ name: "Debian"
+	$
+		name: "Mint"
+		motto: """
+			from freedom
+			came elegance
+		"""
+		nameTranslations:
+			русский: "Минт"
+	$ name: "Gentoo"
 ]
 
 dbs: # DB parameters.
-  MySQL: username: "test", password: "test",
-  "Another Database":
-    active: false
-    port: 1234
-    username: "unknown"
-    password: "unknown"
-  Redis:
-    smth: "here"
+	MySQL: username: "test", password: "test",
+	"Another Database":
+		active: false
+		port: 1234
+		username: "unknown"
+		password: "unknown"
+	Redis:
+		smth: "here"
 ```
 
 ## License
