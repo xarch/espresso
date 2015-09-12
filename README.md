@@ -47,21 +47,21 @@ TODO: PEG file with a formal specification.
 ```
 ```coffee
 """Multiline
-comment
+string
 is here..."""
 ```
 **NB**: For simplicity, as opposed to CoffeeScript:
 
-1. No multiline comments of form `"..."` are allowed.
+1. No multiline strings of form `"..."` are allowed.
 2. Body of `"""..."""` is not processed in any special way. To illustrate:
 ```coffee
 """
 	Some
-	comment...
+	string...
 """
 ```
-The comment above is equivalent to `"\n\tSome\n\tcomment...\n"`, **NOT**
-`"Some comment..."` as in CoffeeScript.
+The string above is equivalent to `"\n\tSome\n\tstring...\n"`, **NOT**
+`"Some string..."` as in CoffeeScript.
 
 ## License
 Distributed under the BSD 2-clause "Simplified" License unless otherwise noted.
