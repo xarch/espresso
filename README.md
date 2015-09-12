@@ -50,7 +50,7 @@ TODO: PEG file with a formal specification.
 comment
 is here..."""
 ```
-**NB**: For simplicity of parsing, as opposed to CoffeeScript:
+**NB**: For simplicity, as opposed to CoffeeScript:
 
 1. No multiline comments of form `"..."` are allowed.
 2. Body of `"""..."""` is not processed in any special way. To illustrate:
