@@ -1,7 +1,7 @@
 # espresso
-Human friendly format that is based on a CoffeeScript Language's syntax, an alternative to
-[YAML](http://yaml.org), [JSON](http://json.org), and [CSON](https://github.com/bevry/cson).
-Reference Implementation.
+Human friendly format that is based on a subset of CoffeeScript Language, an alternative to
+[YAML](http://yaml.org), [JSON](http://json.org), and [CSON](https://github.com/bevry/cson)
+for configuration files. Reference Implementation.
 
 ## Version
 **0.0.1**
@@ -34,7 +34,16 @@ dbs: # DB parameters.
 ```
 
 ## Spec
-TODO: PEG file with a formal specification.
+### Character Set
+```PEG
+// Just as in YAML only printable subset of Unicode character set is used.
+Printable <- "\t" / "\n" / "\r" / [ -~] / "…"
+	/ [\xA0-\xD7FF] / [\xE000-\xFFFD] / [\x10000-\x10FFFF]
+
+LineBreak <- "\r\n" / "\r" / "\n"
+
+Space <- " " / "\t"
+```
 
 ### Booleans
 ### Comments
