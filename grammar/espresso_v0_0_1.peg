@@ -61,7 +61,7 @@ InlineKVPair <- k:InlineKey v:Value {
 	return []interface{}{k, v}, nil
 }
 
-List <- '[' _ vals:ListBody* _ ']' {
+List <- '[' vals:ListBody* ']' {
 	return vals, nil
 }
 
@@ -77,7 +77,7 @@ InlineKey <- val:(InlineValue / PureKey) KeyDelim Space* {
 	return fmt.Sprintf("%v", val), nil
 }
 
-PureKey <- (!KeyDelim !Space !Quote !InlineQuote !LBreak Any)+ {
+PureKey <- (!KeyDelim !Space !Quote !InlineQuote !LBreak !'[' !']' !'{' !'}'  Any)+ {
 	return string(c.text), nil
 }
 
