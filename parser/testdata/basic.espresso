@@ -27,7 +27,7 @@ came elegance`
 		"Another Database": {
 			active: false
 			port: 1234
-			usernames: "admin" "root" "userx"
+			usernames: [ "admin" "root" "userx" ]
 			password: "unknown"
 		}
 		Redis: "inactive"
