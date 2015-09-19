@@ -1,7 +1,12 @@
 # espresso
-Human friendly format that is based on a subset of CoffeeScript Language, an alternative to
+CoffeeScript family Object Notation, an alternative to
 [YAML](http://yaml.org), [JSON](http://json.org), and [CSON](https://github.com/bevry/cson)
 for configuration files. Reference Implementation.
+
+* Easy to read and write.
+* Easy to parse.
+* Whitespace is not significant.
+* CoffeeScript syntax highlighting can be used.
 
 ## Version
 **0.0.1**
@@ -40,43 +45,55 @@ came elegance`
 ```
 
 ## Spec
-### Character Set
-```PEG
-// Just as in YAML only printable subset of Unicode character set is used.
-Printable <- "\t" / "\n" / "\r" / [ -~] / "…"
-	/ [\xA0-\xD7FF] / [\xE000-\xFFFD] / [\x10000-\x10FFFF]
-
-LineBreak <- "\r\n" / "\r" / "\n"
-
-Space <- " " / "\t"
-```
+Read [PEG file](grammar/espresso_v0_0_1.peg) for more formal description of the format.
 
 ### Booleans
+```coffee
+active: true
+deprecated: false
+```
 ### Comments
+```coffee
+# A comment may start at the beginning of line.
+lst: [ # Or at the end of line.
+	1 2 3 4 5 # Like here.
+] # Or here.
+```
 ### Lists
+```coffee
+strings: [
+	"s1" "s2" "s3"
+]
+ints: [1 2 3]
+```
 ### Numbers
+#### Integers
+```coffee
+a: 100
+b: -200
+```
 ### Objects
+#### Inline
+```coffee
+somekey: anotherKey1: "value1" anotherKey2: "value2"
+"Key with spaces": 123
+```
+#### Multiline
+```coffee
+somekey: {
+	anotherKey1: "value1"
+	anotherKey2: "value2"
+}
+```
 ### Strings
 ```coffee
 "Some non-breakable string."
 ```
 ```coffee
-"""Multiline
+`Multiline raw
 string
-is here..."""
+is here...`
 ```
-**NB**: For simplicity, as opposed to CoffeeScript:
-
-1. No multiline strings of form `"..."` are allowed.
-2. Body of `"""..."""` is not processed in any special way. To illustrate:
-```coffee
-"""
-	Some
-	string...
-"""
-```
-The string above is equivalent to `"\n\tSome\n\tstring...\n"`, **NOT**
-`"Some string..."` as in CoffeeScript.
 
 ## License
 Distributed under the BSD 2-clause "Simplified" License unless otherwise noted.
