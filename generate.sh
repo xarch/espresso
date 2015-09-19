@@ -1,0 +1,3 @@
+pigeon -o ./parser/parser.go grammar/espresso_v0_0_1.peg
+gofmt -w -s ./parser/parser.go
+go test -v ./parser/...
