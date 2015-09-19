@@ -1,35 +1,36 @@
 package testdata
 
 // Basic is a representation of basic testdata espresso file.
-var Basic = map[string]interface{}{
-	"distros": []map[string]interface{}{
-		{"name": "Ubuntu", "version": "x.x.x"},
-		{"name": "Debian"},
-		{"name": "Mint", "motto": "from freedom came elegance"},
+var Basic = map[interface{}]interface{}{
+	"distros": []interface{}{
+		map[interface{}]interface{}{"name": "Ubuntu", "version": "x.x.x"},
+		map[interface{}]interface{}{"name": "Debian"},
+		map[interface{}]interface{}{"name": "Mint", "motto": `from freedom
+came elegance`},
 	},
-	"greetings": map[string]string{
+	"greetings": map[interface{}]interface{}{
 		"普通话":     "你好",
 		"русский": "привет",
 	},
-	"numbers": map[string]string{
+	"numbers": map[interface{}]interface{}{
 		"1": "One",
 		"2": "Two",
 		"3": "Three",
 	},
-	"bools": map[string]string{
+	"bools": map[interface{}]interface{}{
 		"true":  "Yes",
 		"false": "No",
 	},
-	"dbs": map[string]interface{}{
-		"MySQL": map[string]string{
+	"dbs": map[interface{}]interface{}{
+		"MySQL": map[interface{}]interface{}{
 			"username": "test",
 			"password": "test",
 		},
-		"Another Database": map[string]interface{}{
-			"active":   false,
-			"port":     1234,
-			"username": "unknown",
-			"password": "unknown",
+		"Another Database": map[interface{}]interface{}{
+			"active":    false,
+			"port":      int64(1234),
+			"usernames": []interface{}{"admin", "root", "userx"},
+			"password":  "unknown",
 		},
 		"Redis": "inactive",
 	},
