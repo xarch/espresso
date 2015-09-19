@@ -74,18 +74,18 @@ Value <- InlineObject / String / Object / List / InlineValue
 InlineValue <- Boolean / InlineString / Integer
 
 InlineKey <- val:(InlineValue / PureKey) KeyDelim Space* {
-	return fmt.Sprintf("%s", val), nil
+	return fmt.Sprintf("%v", val), nil
 }
 
-PureKey <- (!KeyDelim !Space !Quote !InlineQuote !LBreak Printable)+ {
+PureKey <- (!KeyDelim !Space !Quote !InlineQuote !LBreak Any)+ {
 	return string(c.text), nil
 }
 
-String <- Quote (!Quote Printable)* Quote {
+String <- Quote (!Quote Any)* Quote {
 	return strconv.Unquote(string(c.text))
 }
 
-InlineString <- InlineQuote (!InlineQuote !LBreak Printable)* InlineQuote {
+InlineString <- InlineQuote (!InlineQuote !LBreak Any)* InlineQuote {
 	return strconv.Unquote(string(c.text))
 }
 
@@ -100,10 +100,9 @@ Boolean <- ("true" / "false") {
 	return false, nil
 }
 
-Comment <- '#' (!LBreak Printable)* LBreak
+Comment <- '#' (!LBreak Any)* LBreak
 
-Printable <- "\t" / "\n" / "\r" / [ -~] / "…"
-	/ [\xA0-\xD7FF] / [\xE000-\xFFFD] / [\x10000-\x10FFFF] / [а-я]
+Any <- .
 
 _ "whitespace" <- (Space / LBreak / Comment)*
 

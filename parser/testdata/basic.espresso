@@ -1,0 +1,35 @@
+# Sample espresso file.
+{
+	distros: [
+		name: "Ubuntu" version: "x.x.x"
+		name: "Debian"
+		{
+			name: "Mint"
+			motto: `from freedom
+came elegance`
+		}
+	]
+
+	greetings: {
+		普通话: "你好" # Comments at the end of lines are allowed.
+		русский: "привет"
+	}
+
+	# Keys are always treated as strings
+	# even if they are not.
+	numbers: {
+		1: "One" 2: "Two" 3: "Three"
+	}
+	bools: true: "Yes" false: "No"
+
+	dbs: { # Some DB parameters.
+		MySQL: username: "test" password: "test"
+		"Another Database": {
+			active: false
+			port: 1234
+			usernames: "admin" "root" "userx"
+			password: "unknown"
+		}
+		Redis: "inactive"
+	}
+}
