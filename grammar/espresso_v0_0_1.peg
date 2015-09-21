@@ -102,6 +102,7 @@ ListItem <- _ val:Value _ {
 Value <- InlineValue / String / List / Object
 
 // Inline value is of one of supported one line types, e.g:
+//	${OPENSHIFT_RETHINKDB_PORT}
 //	key: "value"
 //	true
 //	"Sample string"
@@ -174,8 +175,8 @@ Boolean <- ("true" / "false") {
 }
 
 // Any line or part of line starting with a '#' symbol, e.g.:
-// # This is sample one line comment.
-// a: "b" # This is comment, too.
+//	# This is sample one line comment.
+//	a: "b" # This is comment, too.
 Comment <- Sharp (!LBreak Any)* LBreak
 
 // An optional sequence of spaces, line breaks, and/or comments.
