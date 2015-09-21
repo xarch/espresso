@@ -133,6 +133,7 @@ a: 100
 b: -200
 ```
 ### Objects
+
 #### Inline
 ```coffee
 somekey: anotherKey1: "value1" anotherKey2: "value2"
@@ -145,6 +146,16 @@ somekey: {
 	anotherKey2: "value2"
 }
 ```
+
+> Note: Keys are always parsed as strings.
+> ```coffee
+> 123: "value" false: "value"
+> ```
+> The example above is an equivalent of:
+> ```go
+> map[interface{}]interface{}{"123": "value", "false": "value"}
+> ```
+
 ### Strings
 ```coffee
 "Some non-breakable string."
