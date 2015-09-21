@@ -50,26 +50,26 @@ Espresso <- _ val:Value? _ EOF {
 //	  key2: "value2"
 //	}
 // Braces are required.
-Object <- LBrace _ vals:(_ val:KVPair _ {return val, nil})* _ RBrace {
+Object <- LBrace _ vals:val:KVPair* _ RBrace {
 	return sliceOfKVSlicesToObject(vals)
 }
 
 // Pair of a key and value that may be inline or may be not, e.g.:
 //	key:
 //	    "value"
-KVPair <- k:InlineKey _ v:Value {
+KVPair <- _ k:InlineKey _ v:Value _ {
 	return []interface{}{k, v}, nil
 }
 
 // An object that has all its key-value pairs on the same line, e.g:
 //	key1: "value1" key2: "value2"
-InlineObject <- vals:(Space* val:InlineKVPair {return val, nil})+ {
+InlineObject <- vals:InlineKVPair+ {
 	return sliceOfKVSlicesToObject(vals)
 }
 
 // Inline pair of a key and value, e.g.:
 //	key: value.
-InlineKVPair <- k:InlineKey v:Value {
+InlineKVPair <- Space* k:InlineKey v:Value {
 	return []interface{}{k, v}, nil
 }
 
