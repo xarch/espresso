@@ -21,78 +21,151 @@ import (
 	"unicode/utf8"
 )
 
-func interfaceSlice(v interface{}) []interface{} {
-	if v == nil {
-		return nil
+// sliceOfKVSlicesToObject gets a value that must be [][]interface{}
+// that has the following structure: [["key1", "value1"], ["key2", "value2"]].
+// And returns it as map[interface{}]interface{}.
+// It doesn't have any checks for purpose and will panic if input is incorrect.
+func sliceOfKVSlicesToObject(val interface{}) (map[interface{}]interface{}, error) {
+	lst := val.([]interface{})
+	obj := make(map[interface{}]interface{}, len(lst))
+	for i := 0; i < len(lst); i++ {
+		t := lst[i].([]interface{})
+		obj[t[0]] = t[1]
 	}
-	return v.([]interface{})
+	return obj, nil
 }
 }
 
+// Any supported type by itself is a valid Espresso, e.g.:
+//	[1 2 3 4]
+// or:
+//	{a: "b"}
 Espresso <- _ val:Value? _ EOF {
 	return val, nil
 }
 
-Object <- '{' _ vals:(_ val:KVPair _ {return val, nil})* _ '}' {
-	lst := interfaceSlice(vals)
-	obj := make(map[interface{}]interface{}, len(lst))
-	for i := 0; i < len(lst); i++ {
-		t := interfaceSlice(lst[i])
-		obj[t[0]] = t[1]
-	}
-	return obj, nil
+// An object that may have key-value pairs on multiple lines, e.g.:
+//	{
+//	  key1: "value1"
+//	  key2: "value2"
+//	}
+// Quirly braces are required.
+Object <- LBrace _ vals:(_ val:KVPair _ {return val, nil})* _ RBrace {
+	return sliceOfKVSlicesToObject(vals)
 }
 
+// Pair of a key and value that may be inline or may be not, e.g.:
+//	key:
+//	    "value"
 KVPair <- k:InlineKey _ v:Value {
 	return []interface{}{k, v}, nil
 }
 
+// An object that has all its key-value pairs on the same line, e.g:
+//	key1: "value1" key2: "value2"
 InlineObject <- vals:(Space* val:InlineKVPair {return val, nil})+ {
-	lst := interfaceSlice(vals)
-	obj := make(map[interface{}]interface{}, len(lst))
-	for i := 0; i < len(lst); i++ {
-		t := interfaceSlice(lst[i])
-		obj[t[0]] = t[1]
-	}
-	return obj, nil
+	return sliceOfKVSlicesToObject(vals)
 }
 
+// Inline pair of a key and value, e.g.:
+//	key: value.
 InlineKVPair <- k:InlineKey v:Value {
 	return []interface{}{k, v}, nil
 }
 
-List <- '[' vals:ListBody* ']' {
+// List is a number of items that have square braces around them, e.g.:
+//	[1 2 3]
+// or
+//	[
+//		"a" "b" "c"
+//	]
+List <- LSBracket vals:ListItem* RSBracket {
 	return vals, nil
 }
 
-ListBody <- _ val:Value _ {
+// List item is any value that may be separated from other values with a
+// whitespace, e.g.:
+//	"value1"
+// or
+//	123
+ListItem <- _ val:Value _ {
 	return val, nil
 }
 
-Value <- InlineObject / String / Object / List / InlineValue
+// Value is either of inline value type or of supported multiple line types, e.g.:
+//	`Multiline
+//	string`
+//	{"demo":
+//	"object"}
+//	[1 2 3
+//	4 5 6]
+Value <- InlineValue / String / List / Object
 
-InlineValue <- Boolean / InlineString / Integer
+// Inline value is of one of supported one line types, e.g:
+//	key: "value"
+//	true
+//	"Sample string"
+//	123
+InlineValue <- EnvVar / InlineObject / Boolean / InlineString / Integer
 
-InlineKey <- val:(InlineValue / PureKey) KeyDelim Space* {
-	return fmt.Sprintf("%v", val), nil
+// Keys are always either inline strings or quotless inline strings, e.g.:
+//	key1: "value1"
+//	"key2": "value2"
+// Key may have optional space after colons, e.g.:
+//	key:    "value"
+InlineKey <- val:(InlineString / QuotlessString) Colon Space* {
+	return val.(string), nil
 }
 
-PureKey <- (!KeyDelim !Space !Quote !InlineQuote !LBreak !'[' !']' !'{' !'}'  Any)+ {
+// Environment variables are special constructions in a form:
+//	${SOME_NAME}
+// They will be replaces by their corresponding values.
+// Note: they are always strings.
+EnvVar <- Dollar LBrace _ val:QuotlessString _ RBrace {
+	return os.Getenv(val.(string)), nil
+}
+
+// A string containing no reserved characters so it can be used without quotes, e.g.:
+//	QuotlessString: "some value"
+// instead of:
+//	"String with quotes": "some value"
+// Moreover, quotless string cannot contain spaces or line breaks.
+QuotlessString <- (!Reserved !Space !LBreak  Any)+ {
 	return string(c.text), nil
 }
 
-String <- Quote (!Quote Any)* Quote {
+// String is any sequence of characters with quote signs around them, e.g.:
+//	`hello
+//	world`
+// or
+//	`привет
+//	мир`
+// They may not contain '`' character inside.
+String <- GAccent (!GAccent Any)* GAccent {
 	return strconv.Unquote(string(c.text))
 }
 
-InlineString <- InlineQuote (!InlineQuote !LBreak Any)* InlineQuote {
+// Inline string is an equivalent of string except line breaks are not allowed, e.g.:
+//	"hello world"
+// or
+//	"привет мир"
+// They may not contain '"' characters or line breaks inside.
+InlineString <- DQuote (!DQuote !LBreak Any)* DQuote {
 	return strconv.Unquote(string(c.text))
 }
 
+// Integer numbers in base 10, e.g.:
+//	123
+// or
+//	-999
+// This implementation uses int64 for their representation.
 Integer <- '-'? ('0' / [1-9]+ [0-9]*) {
-	return strconv.ParseInt(string(c.text), 10, 0)
+	return strconv.ParseInt(string(c.text), 10, 64)
 }
 
+// Either "true" or "false", e.g.:
+//	true
+//	false
 Boolean <- ("true" / "false") {
 	if string(c.text) == "true" {
 		return true, nil
@@ -100,20 +173,53 @@ Boolean <- ("true" / "false") {
 	return false, nil
 }
 
-Comment <- '#' (!LBreak Any)* LBreak
+// Any line or part of line starting with a '#' symbol, e.g.:
+// # This is sample one line comment.
+// a: "b" # This is comment, too.
+Comment <- Sharp (!LBreak Any)* LBreak
 
-Any <- .
-
+// An optional sequence of spaces, line breaks, and/or comments.
 _ "whitespace" <- (Space / LBreak / Comment)*
 
+//
+// Character set:
+//
+
+// Symbols that cannot be used inside Espresso document in the raw as
+// they have some special meanings.
+Reserved <- Colon / Dollar / Sharp / GAccent / DQuote / LSBracket / RSBracket
+	/ LBrace / RBrace / LParenthesis / RParenthesis / Percent / At
+
+Colon <- ':'  // Colon, \x3A.
+Dollar <- '$' // Dollar, \x24.
+Sharp <- '#'  // Sharp, \x23.
+
+GAccent <- '`' // Grave accent, \x60.
+DQuote <- '"'  // Double quote, \x22.
+
+// Symbols that are used to denote start and end of a list.
+LSBracket <- '[' // Left square bracket, \x5B.
+RSBracket <- ']' // Right square bracket, \x5D.
+
+// Symbols that are used to denote start and end of a multiline object.
+LBrace <- '{' // Left brace, \x7B.
+RBrace <- '}' // Right brace, \x7D.
+
+// Symbols that are reserved for future use.
+LParenthesis <- '(' // Left round bracket, \x28.
+RParenthesis <- ')' // Right round bracket, \x29.
+Percent <- '%'      // Percent, \x25.
+At <- '@'           // At, \x40.
+
+// Line feed (\xA), carriage return (\xD), and combination of both
+// for support of Windows, Linux / MacOS X, and MacOS up to 9.x.
 LBreak <- "\r\n" / "\r" / "\n"
 
+// Space (\x20) and tab (\x9).
 Space <- " " / "\t"
 
-KeyDelim <- ':' Space*
+// Supported characters.
+Any <- .
 
-Quote <- '`'
-
-InlineQuote <- '"'
-
+// Any unsupported character means end of document.
 EOF <- !.

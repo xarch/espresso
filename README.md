@@ -112,6 +112,7 @@ Read [PEG file](grammar/espresso_v0_0_1.peg) for more formal description of the 
 active: true
 deprecated: false
 ```
+
 ### Comments
 ```coffee
 # A comment may start at the beginning of line.
@@ -119,6 +120,14 @@ lst: [ # Or at the end of line.
 	1 2 3 4 5 # Like here.
 ] # Or here.
 ```
+
+### Environment variables
+```coffee
+port: ${OPENSHIFT_RETHINKDB_PORT}
+```
+
+> Note: Environment variable values are always strings.
+
 ### Lists
 ```coffee
 strings: [
@@ -126,12 +135,14 @@ strings: [
 ]
 ints: [1 2 3]
 ```
+
 ### Numbers
 #### Integers
 ```coffee
 a: 100
 b: -200
 ```
+
 ### Objects
 
 #### Inline

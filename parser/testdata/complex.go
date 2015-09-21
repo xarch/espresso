@@ -1,7 +1,12 @@
 package testdata
 
-// Basic is a representation of basic testdata espresso file.
-var Basic = map[interface{}]interface{}{
+import (
+	"go/build"
+)
+
+// Complex represents decoded "complex.espresso" file.
+var Complex = map[interface{}]interface{}{
+	"gopath": build.Default.GOPATH,
 	"distros": []interface{}{
 		map[interface{}]interface{}{"name": "Ubuntu", "version": "x.x.x"},
 		map[interface{}]interface{}{"name": "Debian"},

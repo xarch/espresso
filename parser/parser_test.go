@@ -8,7 +8,17 @@ import (
 )
 
 var correctFiles = map[string]interface{}{
-	"./testdata/basic.espresso": ts.Basic,
+	"./testdata/boolean.espresso":       ts.Boolean,
+	"./testdata/env.espresso":           ts.Env,
+	"./testdata/integer.espresso":       ts.Integer,
+	"./testdata/key_quotless.espresso":  ts.KeyQuotless,
+	"./testdata/list.espresso":          ts.List,
+	"./testdata/object.espresso":        ts.Object,
+	"./testdata/object_inline.espresso": ts.ObjectInline,
+	"./testdata/string.espresso":        ts.String,
+	"./testdata/string_inline.espresso": ts.StringInline,
+
+	"./testdata/complex.espresso": ts.Complex,
 }
 
 var incorrectFiles = []string{
@@ -27,6 +37,7 @@ func TestParseFile_Incorrect(t *testing.T) {
 		res, err := ParseFile(path, Debug(true))
 		if res != nil || err == nil {
 			t.Error(err)
+			t.FailNow()
 		}
 	}
 }
@@ -36,9 +47,11 @@ func TestParseFile(t *testing.T) {
 		res, err := ParseFile(path)
 		if err != nil {
 			t.Error(err)
+			t.FailNow()
 		}
 		if !reflect.DeepEqual(exp, res) {
 			t.Errorf("Incorrect result of ParseFile. Expected:\n%v\nGot:\n%v", exp, res)
+			t.FailNow()
 		}
 	}
 }
@@ -48,9 +61,11 @@ func TestParseFile_Debug(t *testing.T) {
 		res, err := ParseFile(path, Debug(true), Memoize(true), Recover(true))
 		if err != nil {
 			t.Error(err)
+			t.FailNow()
 		}
 		if !reflect.DeepEqual(exp, res) {
 			t.Errorf("Incorrect result of ParseFile. Expected:\n%v\nGot:\n%v", exp, res)
+			t.FailNow()
 		}
 	}
 }
