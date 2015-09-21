@@ -1,17 +1,77 @@
 # espresso
-CoffeeScript family Object Notation, an alternative to
-[YAML](http://yaml.org), [JSON](http://json.org), and [CSON](https://github.com/bevry/cson)
-for configuration files. Reference Implementation.
+Simple configuration file format that aims to be easy to read, write, and parse.
+Reference Implementation.
 
-* Easy to read and write.
-* Easy to parse.
 * Whitespace is not significant.
 * CoffeeScript syntax highlighting can be used.
 
 ## Version
 **0.0.1**
 
-## Example
+## Story of espresso
+#### In the beginning: JSON
+Initially there was a JSON configuration file (*fragment*):
+```json
+"watch": {
+	"_comment": [
+		"This section contains paths to directories that should be watched and commands",
+		"that should be executed when files in those directories are changed."
+	],
+
+	"path/to/controllers": [
+		{"_comment": "These commands will be started every time you modify your controllers."}
+
+		{"run": "go get ./controllers"},
+		{"run": "go build ./...", "async": true},
+		{"run": "go test ./... -v"},
+		{"run": "app", "single_instance": true}
+	]
+}
+```
+
+#### Comments
+It was almost ideal except, there were no comments. So, **espresso** brought support of them:
+```coffee
+# This section contains paths to directories that should be watched and commands
+# that should be executed when files in those directories are changed.
+```
+
+#### Commas
+Then commas... It was a bit boring to type them every time and it was a bit irritating to control
+there were no trailing commas somewhere.
+A decision to get rid of them altogether was made, space is enough for all!
+```coffee
+"run": "go build ./..." "async"=true
+```
+
+#### "Keys"
+But how about keys? Typing those double quotes (`""`) around them was not big fun, too.
+So, quotes became optional:
+```coffee
+key_without_quotes: "some value"
+"key with quotes": "some value"
+```
+
+#### Curly braces
+We were cool. But it felt like those curly braces (`{}`) were superfluous sometimes.
+That's why they were allowed to be dropped in case of simple one-line objects.
+And what we finally got is:
+```coffee
+# This section contains paths to directories that should be watched and commands
+# that should be executed when files in those directories are changed.
+watch: {
+	# These commands will be started every time you modify your controllers.
+	"path/to/controllers": [
+		run: "go get ./controllers"
+		run: "go build ./..." async: true
+		run: "go test ./... -v"
+		run: "app" single_instance: true
+	]
+}
+```
+Much easier to read and write, right? And is almost as simple to parse as JSON.
+
+## Full sample
 ```coffee
 # Sample espresso file.
 {
@@ -90,7 +150,7 @@ somekey: {
 "Some non-breakable string."
 ```
 ```coffee
-`Multiline raw
+`Multiline
 string
 is here...`
 ```
