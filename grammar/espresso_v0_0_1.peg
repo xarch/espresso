@@ -79,7 +79,7 @@ InlineKVPair <- k:InlineKey v:Value {
 //	[
 //		"a" "b" "c"
 //	]
-List <- LSBracket vals:ListItem* RSBracket {
+List <- LSBracket _ vals:ListItem* _ RSBracket {
 	return vals, nil
 }
 
