@@ -107,7 +107,7 @@ Value <- InlineValue / String / List / Object
 //	true
 //	"Sample string"
 //	123
-InlineValue <- EnvVar / InlineObject / Boolean / InlineString / Integer
+InlineValue <- EnvVar / InlineObject / InlineString / Integer / Boolean
 
 // Keys are always either inline strings or quotless inline strings, e.g.:
 //	key1: "value1"

@@ -319,15 +319,15 @@ var g = &grammar{
 					},
 					&ruleRefExpr{
 						pos:  position{line: 110, col: 40, offset: 2599},
-						name: "Boolean",
-					},
-					&ruleRefExpr{
-						pos:  position{line: 110, col: 50, offset: 2609},
 						name: "InlineString",
 					},
 					&ruleRefExpr{
-						pos:  position{line: 110, col: 65, offset: 2624},
+						pos:  position{line: 110, col: 55, offset: 2614},
 						name: "Integer",
+					},
+					&ruleRefExpr{
+						pos:  position{line: 110, col: 65, offset: 2624},
+						name: "Boolean",
 					},
 				},
 			},

@@ -56,9 +56,9 @@ func TestParseFile(t *testing.T) {
 	}
 }
 
-func TestParseFile_Debug(t *testing.T) {
+func TestParseFile_Options(t *testing.T) {
 	for path, exp := range correctFiles {
-		res, err := ParseFile(path, Debug(true), Memoize(true), Recover(true))
+		res, err := ParseFile(path, Memoize(true), Recover(true))
 		if err != nil {
 			t.Error(err)
 			t.FailNow()
