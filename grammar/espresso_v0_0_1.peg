@@ -50,7 +50,7 @@ Espresso <- _ val:Value? _ EOF {
 //	  key2: "value2"
 //	}
 // Braces are required.
-Object <- LBrace _ vals:val:KVPair* _ RBrace {
+Object <- LBrace _ vals:KVPair* _ RBrace {
 	return sliceOfKVSlicesToObject(vals)
 }
 
