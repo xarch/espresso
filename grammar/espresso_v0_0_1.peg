@@ -49,7 +49,7 @@ Espresso <- _ val:Value? _ EOF {
 //	  key1: "value1"
 //	  key2: "value2"
 //	}
-// Quirly braces are required.
+// Braces are required.
 Object <- LBrace _ vals:(_ val:KVPair _ {return val, nil})* _ RBrace {
 	return sliceOfKVSlicesToObject(vals)
 }
@@ -73,7 +73,7 @@ InlineKVPair <- k:InlineKey v:Value {
 	return []interface{}{k, v}, nil
 }
 
-// List is a number of items that have square braces around them, e.g.:
+// List is a number of items that have square brackets around them, e.g.:
 //	[1 2 3]
 // or
 //	[
