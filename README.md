@@ -41,7 +41,7 @@ Then commas... It was a bit boring to type them every time and it was a bit irri
 there were no trailing commas somewhere.
 A decision to get rid of them altogether was made, space is enough for all!
 ```coffee
-"run": "go build ./..." "async"=true
+"run": "go build ./..." "async": true
 ```
 
 #### "Keys"
