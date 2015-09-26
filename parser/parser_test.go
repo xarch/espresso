@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	ts "github.com/anonx/espresso/parser/testdata"
+	ts "github.com/alkchr/espresso/parser/testdata"
 )
 
 var correctFiles = map[string]interface{}{

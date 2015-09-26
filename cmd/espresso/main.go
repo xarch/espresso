@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/anonx/espresso/parser"
+	"github.com/alkchr/espresso/parser"
 )
 
 func main() {
